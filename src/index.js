@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 
 app.use('/images', routes.image);
 app.use('/hydrants', routes.hydrant);
+app.use('/closest-hydrant', routes.closestHydrant);
 
 app.listen(3000, () =>
     console.log('Example app listening on port ${PORT}!'),
