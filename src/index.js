@@ -23,18 +23,10 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/images', routes.image);
-app.use('/hydrants', routes.hydrant);
-app.use('/closest-hydrant', routes.closestHydrant);
+app.use('/api/images', routes.image);
+app.use('/api/hydrants', routes.hydrant);
+app.use('/api/closest-hydrant', routes.closestHydrant);
 
-//app.listen(3000, () =>
-//    console.log('Example app listening on port ${PORT}!'),
-//);
-
-const httpsOptions = {
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./server.crt')
-  }
-  const server = https.createServer(httpsOptions, app).listen(port, () => {
-    console.log('server running at ' + port)
-  })
+app.listen(3000, () =>
+    console.log('Example app listening on port ${PORT}!'),
+);
