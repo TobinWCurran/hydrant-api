@@ -18,7 +18,7 @@ const getClosestHydrant = function (thisLocation, thoseLocations) {
     }
 
     return thoseLocations.reduce(function (previousValue, currentValue) {
-        console.log('currentValue: ', currentValue);
+        //console.log('currentValue: ', currentValue);
         let prevDistance = locationDistance(thisLocation, previousValue), //
             currDistance = locationDistance(thisLocation, currentValue);
 
@@ -26,7 +26,7 @@ const getClosestHydrant = function (thisLocation, thoseLocations) {
     });
 }
 
-router.get('/', (req, res) => {
+router.post('/', (req, res) => {
 
     let allHydrants = Object.values(req.context.models.hydrants);
     
@@ -35,9 +35,11 @@ router.get('/', (req, res) => {
     let thoseLocations = [];
 
     let thisLocation = {
-        lat: req.query.lat,
-        lon: req.query.lon
+        lat: req.body.lat,
+        lon: req.body.lon
     };
+
+    console.log("thisLocation: ", thisLocation);
 
     for (let i = 0; i < allHydrants.length; i++) {
         thoseLocations.push({
