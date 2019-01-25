@@ -5,7 +5,6 @@ let hydrantItems = hydrantDataRaw.data;
 const processHydrantData = () => {
     
     let hydrantArray = [];
-    let hydrantObject = {};
     
     for (let i=0; i < hydrantItems.length; i++ ){
         let hydrantItemColumn = hydrantItems[i];
