@@ -4,7 +4,6 @@ import cors from 'cors';
 import routes from './routes';
 import bodyParser from 'body-parser';
 import models from './models';
-import mongoose from 'mongoose';
 
 /* connect to database */
 
@@ -16,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-//app.use(app.static(__dirname, 'uploads'));
+app.use(express.static('uploads'));
 
 app.use((req, res, next) => {
     req.context = {

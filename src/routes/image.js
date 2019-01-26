@@ -5,22 +5,20 @@ import ImageModel from '../models/image-model';
 import upload from '../controllers/image-upload-controller';
 import mongoose from 'mongoose';
 
+const hydrantImageStorageLoc = process.env.HYDRANT_IMAGE_STORAGE_LOC;
+
 mongoose.connect(process.env.HYDRANT_DB,  {useNewUrlParser: true});
 
 const router = Router();
 
 router.get('/', (req, res) => {
     ImageModel.find().lean().exec(function(err, images){
-        //console.log(images);
-        console.log(JSON.stringify(images));
-        //return JSON.stringify(images);
-        //return res.end(JSON.stringify(images));
-        res.send(images);
+        if(err){
+            res.send("There was an error: " + err)
+        }else {
+            res.send(images);
+        }
     });
-    //console.log("req.context.models.Images: ", req.context.models.Images )
-    //return res.send(req.context.models.Images);
-  
-  //return res.send("Hello")
 });
 
 router.post('/', (req, res, next) => {
@@ -45,17 +43,21 @@ router.post('/', (req, res, next) => {
         //console.log("req.file.filename: ", req.file.filename);
         //console.log("req.file.destination: ", req.file.destination);
         
+        let hydrantId = req.body.hydrantId;
         let fileName = req.file.filename;
+        let imgLocLat = req.body.imgLat;
+        let imgLocLon = req.body.imgLon;
         let filePath = req.file.destination + '/';
 
+        const regEx = '^' + hydrantImageStorageLoc;
         const document = {
-            hydrant_id: "New 1",
-            img_url: filePath + fileName,
-            img_loc_lat: 2,
-            img_loc_lon: 3
+            hydrant_id: hydrantId,
+            img_url: filePath.replace(hydrantImageStorageLoc, '') + fileName,
+            img_loc_lat: imgLocLat,
+            img_loc_lon: imgLocLon
         };
 
-        let image = new req.context.models.ImageModel(document);
+        let image = new req.context.models.imageModel(document);
         image.save(function (error) {
             if (error) {
                 throw error;
