@@ -17,6 +17,10 @@ const storage = multer.diskStorage({
         let storageDirYear = hydrantImageStorageLoc + thisYear;
         let storageDirMonth = hydrantImageStorageLoc + thisYear + '/' + thisMonth;
 
+		if(!fs.existsSync(hydrantImageStorageLoc)){
+            fs.mkdirSync(hydrantImageStorageLoc)
+        }
+
         if(!fs.existsSync(storageDirYear)){
             fs.mkdirSync(storageDirYear)
         }
@@ -28,7 +32,7 @@ const storage = multer.diskStorage({
         callback(null, storageDirMonth);
     },
     filename: function (req, file, callback) {
-        crypto.pseudoRandomBytes(16, function (err, raw) {
+        crypto.randomBytes(16, function (err, raw) {
             if (err) return callback(err);
 
             callback(null, raw.toString('hex') + path.extname(file.originalname));

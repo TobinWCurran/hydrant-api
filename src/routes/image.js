@@ -63,7 +63,7 @@ router.post('/', (req, res, next) => {
                 throw error;
             }
             res.send({
-                success: true
+                success: "Your hydrant image has been successfully uploaded."
             })
         });
     })
