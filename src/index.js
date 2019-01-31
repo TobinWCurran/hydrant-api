@@ -4,7 +4,8 @@ import cors from 'cors';
 import routes from './routes';
 import bodyParser from 'body-parser';
 import models from './models';
-
+import path from  'path';
+import fs from 'fs';
 /* connect to database */
 
 
@@ -15,7 +16,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('uploads'));
+
+app.use( express.static('public') ) ;
 
 app.use((req, res, next) => {
     req.context = {
@@ -23,8 +25,10 @@ app.use((req, res, next) => {
     };
     // If the current middleware function does not end the request-response cycle, 
     // it must call next() to pass control to the next middleware function. 
-    // Otherwise, the request will be left hanging.
-    next();
+    // Otherwise, the request will be left hanging.   
+
+ next();
+   
 });
 
 app.use('/api/images', routes.image);

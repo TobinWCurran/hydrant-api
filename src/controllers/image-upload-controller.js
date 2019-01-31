@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
         let storageDirYear = hydrantImageStorageLoc + thisYear;
         let storageDirMonth = hydrantImageStorageLoc + thisYear + '/' + thisMonth;
 
-        if(!fs.existsSync(storageDirYear)){
-            fs.mkdirSync(storageDirYear)
+       if(!fs.existsSync(storageDirYear)){
+         fs.mkdirSync(storageDirYear)
         }
 
         if (!fs.existsSync(storageDirMonth)){
