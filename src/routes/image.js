@@ -12,7 +12,7 @@ mongoose.connect(process.env.HYDRANT_DB,  {useNewUrlParser: true});
 const router = Router();
 
 router.get('/', (req, res) => {
-    ImageModel.find().lean().exec(function(err, images){
+    ImageModel.find({}, null, {sort: {upload_date: -1}}).lean().exec(function(err, images){
         if(err){
             res.send("There was an error: " + err)
         }else {
