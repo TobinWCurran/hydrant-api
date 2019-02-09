@@ -1,7 +1,7 @@
 import hydrants from './hydrants-model';
-import imageModel from './image-model';
+import photoModel from './photo-model';
 
 export default {
     hydrants,
-    imageModel,
+    photoModel,
 };

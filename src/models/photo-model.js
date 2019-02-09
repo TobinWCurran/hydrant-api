@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
 
-let imageSchema = new mongoose.Schema({
+let photoSchema = new mongoose.Schema({
     hydrant_id: String,
     img_url: String,
     img_loc_lat: String,
@@ -9,6 +9,6 @@ let imageSchema = new mongoose.Schema({
     upload_date: { type: Date, default: Date.now },
 });
 
-let imageModel = mongoose.model('Image', imageSchema);
+let photoModel = mongoose.model('Photo', photoSchema);
 
-export default imageModel;
+export default photoModel;

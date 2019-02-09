@@ -1,9 +1,9 @@
-import image from './image';
+import photo from './photo';
 import hydrant from './hydrant';
 import closestHydrant from './closest-hydrant';
 
 export default {
-  image,
+  photo,
   hydrant,
   closestHydrant
 };

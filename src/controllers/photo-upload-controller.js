@@ -5,7 +5,7 @@ import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 
-const hydrantImageStorageLoc = process.env.HYDRANT_IMAGE_STORAGE_LOC;
+const photoStorageLoc = process.env.HYDRANT_PHOTO_STORAGE_LOC;
 const today = new Date();
 const thisYear = today.getFullYear();
 const thisMonth = today.toLocaleString('en-us', { month: 'short' });
@@ -14,11 +14,11 @@ const storage = multer.diskStorage({
 
     destination: function (req, file, callback) {
         
-        let storageDirYear = hydrantImageStorageLoc + thisYear;
-        let storageDirMonth = hydrantImageStorageLoc + thisYear + '/' + thisMonth;
+        let storageDirYear = photoStorageLoc + thisYear;
+        let storageDirMonth = photoStorageLoc + thisYear + '/' + thisMonth;
 
-		if(!fs.existsSync(hydrantImageStorageLoc)){
-            fs.mkdirSync(hydrantImageStorageLoc)
+		if(!fs.existsSync(photoStorageLoc)){
+            fs.mkdirSync(photoStorageLoc)
         }
 
         if(!fs.existsSync(storageDirYear)){
@@ -40,8 +40,8 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({
+const photoUploadController = multer({
     storage: storage
 }).single('hydrant');
 
-export default upload
+export default photoUploadController

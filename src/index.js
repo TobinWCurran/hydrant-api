@@ -27,7 +27,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/images', routes.image);
+app.use('/api/photos', routes.photo);
 app.use('/api/hydrants', routes.hydrant);
 app.use('/api/closest-hydrant', routes.closestHydrant);
 
