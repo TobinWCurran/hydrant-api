@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import LocationController from '../controllers/location-controller';
 
 const router = Router();
 
@@ -28,6 +29,8 @@ const getClosestHydrant = function (thisLocation, thoseLocations) {
 
 router.post('/', (req, res) => {
 
+	
+
     let allHydrants = Object.values(req.context.models.hydrants);
     
     //let thisLocationReq = JSON.parse(decodeURIComponent(req.query));
@@ -39,7 +42,7 @@ router.post('/', (req, res) => {
         lon: req.body.lon
     };
 
-    console.log("thisLocation: ", thisLocation);
+    //console.log("thisLocation: ", thisLocation);
 
     for (let i = 0; i < allHydrants.length; i++) {
         thoseLocations.push({
@@ -49,7 +52,17 @@ router.post('/', (req, res) => {
         });
     }
 
-    let closestHydrant = getClosestHydrant(thisLocation, thoseLocations);
+	//let closestHydrant = getClosestHydrant(thisLocation, thoseLocations);
+
+	let locationController = new LocationController(thisLocation, thoseLocations);
+	let closestHydrant = locationController.getClosestHydrant();
+
+	//let closest = {
+		//lat: closestHydrant.lat,
+		//lon: closestHydrant.lon
+	//}
+	//let thisLocationDistance = new LocationController(thisLocation, null, closest)
+	//console.log('Valid Distance? ', locationController.getValidDistance(thisLocation, closest))
     
     return res.send(closestHydrant);
 
