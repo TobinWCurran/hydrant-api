@@ -22,6 +22,23 @@ router.get('/', (req, res, next) => {
 	});
 });
 
+router.get('/:hydrantId', (req, res) => {
+	let hydrantId = req.params.hydrantId;
+
+	//res.send('Here\'s your param: ', hydrantId);
+
+	console.log(hydrantId);
+
+	PhotoModel.find({hydrant_id: hydrantId}, null, { sort: { upload_date: -1 } }).lean().exec(function (err, photos) {
+		if (err) {
+			res.send("There was an error: " + err)
+		} else {
+			console.log(photos);
+			res.send(photos);
+		}
+	});
+});
+
 router.post('/', (req, res, next) => {
 
 

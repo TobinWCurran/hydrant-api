@@ -1,4 +1,5 @@
 import haversine from 'haversine';
+import * as turf from '@turf/turf';
 
 class LocationController {
 
@@ -52,38 +53,6 @@ class LocationController {
 		return (prevDistance < currDistance) ? previousValue : currentValue;
 	}
 
-	// haversine(loc1, loc2){
-	// 	function degrees_to_radians(degrees){
-	// 		var pi = Math.PI;
-	// 		return degrees * (pi/180);
-	// 	}
-
-	// 	let lat1 = Math.abs(loc1.lat);
-	// 	let lon1 = Math.abs(loc1.lon);
-	// 	let lat2 = Math.abs(loc2.lat);
-	// 	let lon2 = Math.abs(loc2.lat);
-
-	// 	console.log('degrees_to_radians(lat1)', degrees_to_radians(lat1));
-	// 	console.log('degrees_to_radians(lat2)', degrees_to_radians(lat2));
-	// 	console.log('degrees_to_radians(lon1)', degrees_to_radians(lon1));
-
-	// 	//-------------------	
-	// 	const R = 6371e3; // metres
-	// 	let φ1 = degrees_to_radians(lat1);
-	// 	let φ2 = degrees_to_radians(lat2);
-	// 	let Δφ = degrees_to_radians(lat2-lat1);
-	// 	let Δλ = degrees_to_radians(lon2-lon1);
-
-	// 	let a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-	// 			Math.cos(φ1) * Math.cos(φ2) *
-	// 			Math.sin(Δλ/2) * Math.sin(Δλ/2);
-	// 	let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-	// 	let d = R * c;
-
-	// 	return d
-	// }
-
 	getValidDistance() {
 		console.log('this.thisLocation', this.thisLocation);
 		console.log('this.thatLocation', this.thatLocation);
@@ -98,8 +67,19 @@ class LocationController {
 			longitude: this.thatLocation.lon
 		}
 
-		let distance = haversine(start, end, {unit: 'meter'});
-		console.log(distance);
+		let haversineDistance = haversine(start, end, {unit: 'meter'});
+		console.log('Haversine Distance: ', haversineDistance);
+
+		//var from = turf.point([-75.343, 39.984]);
+		//var to = turf.point([-75.534, 39.123]);
+		var from = turf.point([this.thisLocation.lon, this.thisLocation.lat]);
+		var to = turf.point([this.thatLocation.lon, this.thatLocation.lat]);
+		var options = {units: 'kilometers'};
+		
+		var distance = turf.rhumbDistance(from, to, options);
+		console.log('Rhumb Distance: ', distance * 1000);
+
+
 		if (distance <= 50) {
 			return true;
 		} else {
