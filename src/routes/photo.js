@@ -90,8 +90,6 @@ router.post('/', (req, res, next) => {
 
 		let validDistance = locationController.getValidDistance();
 
-		//console.log('validDistance:', validDistance);
-
 		let photo = new req.context.models.photoModel(document);
 
 		if (validDistance === false) {

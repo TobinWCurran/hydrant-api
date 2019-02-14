@@ -10,8 +10,11 @@ const processHydrantData = () => {
         let hydrantItemColumn = hydrantItems[i];
         let thisObject = {}
 
-        if (
-			hydrantItemColumn[8] !== null && 
+        if ( 
+            hydrantItemColumn[8] !== null &&
+            hydrantItemColumn[12] !== null && 
+            hydrantItemColumn[13] !== null && 
+            hydrantItemColumn[14] !== null &&
 			hydrantItemColumn[16][1] !== null &&
 			hydrantItemColumn[16][2] !== null ){
 

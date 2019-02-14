@@ -3,37 +3,9 @@ import LocationController from '../controllers/location-controller';
 
 const router = Router();
 
-const getClosestHydrant = function (thisLocation, thoseLocations) {
-
-    function vectorDistance(dx, dy) {
-        //this calculates the hypotenuse of a triangle where
-        //the difference in length for lats and longs form the other 2 sides
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    function locationDistance(location1, location2) {
-        let dx = location1.lat - location2.lat,
-            dy = location1.lon - location2.lon;
-
-        return vectorDistance(dx, dy);
-    }
-
-    return thoseLocations.reduce(function (previousValue, currentValue) {
-        //console.log('currentValue: ', currentValue);
-        let prevDistance = locationDistance(thisLocation, previousValue), //
-            currDistance = locationDistance(thisLocation, currentValue);
-
-        return (prevDistance < currDistance) ? previousValue : currentValue;
-    });
-}
-
 router.post('/', (req, res) => {
 
-	
-
-    let allHydrants = Object.values(req.context.models.hydrants);
-    
-    //let thisLocationReq = JSON.parse(decodeURIComponent(req.query));
+    const allHydrants = Object.values(req.context.models.hydrants);
     
     let thoseLocations = [];
 
@@ -41,8 +13,6 @@ router.post('/', (req, res) => {
         lat: req.body.lat,
         lon: req.body.lon
     };
-
-    //console.log("thisLocation: ", thisLocation);
 
     for (let i = 0; i < allHydrants.length; i++) {
         thoseLocations.push({
@@ -52,17 +22,8 @@ router.post('/', (req, res) => {
         });
     }
 
-	//let closestHydrant = getClosestHydrant(thisLocation, thoseLocations);
-
-	let locationController = new LocationController(thisLocation, thoseLocations);
-	let closestHydrant = locationController.getClosestHydrant();
-
-	//let closest = {
-		//lat: closestHydrant.lat,
-		//lon: closestHydrant.lon
-	//}
-	//let thisLocationDistance = new LocationController(thisLocation, null, closest)
-	//console.log('Valid Distance? ', locationController.getValidDistance(thisLocation, closest))
+	const locationController = new LocationController(thisLocation, thoseLocations);
+	const closestHydrant = locationController.getClosestHydrant();
     
     return res.send(closestHydrant);
 

@@ -5,12 +5,8 @@ import routes from './routes';
 import bodyParser from 'body-parser';
 import models from './models';
 
-/* connect to database */
-
-
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -31,6 +27,6 @@ app.use('/api/photos', routes.photo);
 app.use('/api/hydrants', routes.hydrant);
 app.use('/api/closest-hydrant', routes.closestHydrant);
 
-app.listen(3000, () =>
-    console.log('Example app listening on port ${PORT}!'),
+app.listen(PORT, () =>
+    console.log('Hydrant API listening on port:', PORT),
 );
