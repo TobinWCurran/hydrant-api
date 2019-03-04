@@ -46,7 +46,7 @@ class LocationController {
 
 	locationReducer(previousValue, currentValue) {
 
-		let thisLocation = this.thisLocation;
+		const thisLocation = this.thisLocation;
 		let prevDistance = this.distance(thisLocation, previousValue);
 		let currDistance = this.distance(thisLocation, currentValue);
 		
@@ -72,11 +72,11 @@ class LocationController {
 
 		//var from = turf.point([-75.343, 39.984]);
 		//var to = turf.point([-75.534, 39.123]);
-		var from = turf.point([this.thisLocation.lon, this.thisLocation.lat]);
-		var to = turf.point([this.thatLocation.lon, this.thatLocation.lat]);
-		var options = {units: 'kilometers'};
+		let from = turf.point([this.thisLocation.lon, this.thisLocation.lat]);
+		let to = turf.point([this.thatLocation.lon, this.thatLocation.lat]);
+		let options = {units: 'kilometers'};
 		
-		var distance = turf.rhumbDistance(from, to, options);
+		let distance = turf.rhumbDistance(from, to, options);
 		console.log('Rhumb Distance: ', distance * 1000);
 
 
