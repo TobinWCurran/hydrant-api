@@ -145,7 +145,7 @@ let hydrantSchema = new mongoose.Schema({
 
 const HydrantModel = mongoose.model('Hydrant', hydrantSchema);
 
-const saveToMongo = function saveToMongDbPromise(model){
+const saveToMongo = function saveToMongDbPromise(documentObject, model){
     return new Promise( (resolve, reject) => {
         model.save( (error) => {
             if(error){
