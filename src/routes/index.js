@@ -3,7 +3,7 @@ import hydrant from './hydrant';
 import closestHydrant from './closest-hydrant';
 
 export default {
-  photo,
-  hydrant,
-  closestHydrant
+    photo,
+    hydrant,
+    closestHydrant
 };

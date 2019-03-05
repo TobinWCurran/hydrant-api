@@ -12,83 +12,6 @@ const hydrantItemsBostonNominatim = hydrantDataRawBostonNominatim;
 console.log('hydrantItemsBostonNominatim.length: ', hydrantItemsBostonNominatim.length);
 
 const processBostonData = () => {
-    // Nominatim Data
-    // {  
-    //     "OBJECTID":1002,
-    //     "osmData":{  
-    //        "place_id":"71011870",
-    //        "licence":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
-    //        "osm_type":"way",
-    //        "osm_id":"8648756",
-    //        "lat":"42.3720257385168",
-    //        "lon":"-71.067307083594",
-    //        "place_rank":"26",
-    //        "category":"highway",
-    //        "type":"motorway",
-    //        "importance":"0.1",
-    //        "addresstype":"road",
-    //        "name":"I 93",
-    //        "display_name":"I 93, East Cambridge, Cambridge, Suffolk County, Massachusetts, 02214, USA",
-    //        "address":{  
-    //           "road":"I 93",
-    //           "neighbourhood":"East Cambridge",
-    //           "town":"Cambridge",
-    //           "county":"Suffolk County",
-    //           "state":"Massachusetts",
-    //           "postcode":"02214",
-    //           "country":"USA",
-    //           "country_code":"us"
-    //        },
-    //        "boundingbox":[  
-    //           "42.371874",
-    //           "42.374894",
-    //           "-71.0723757",
-    //           "-71.067064"
-    //        ]
-    //     }
-    //  }
-
-    //Original Data
-    // {  
-    //     "type":"Feature",
-    //     "properties":{  
-    //        "OBJECTID":1002,
-    //        "ANCILLARYROLE":null,
-    //        "ENABLED":"True",
-    //        "FEATURE_ID":2710740053,
-    //        "PLACEMENT_ID":"MIGRATED",
-    //        "PLACEMENT_DATE_TIME":"2007-04-27T00:29:35.000Z",
-    //        "UPDATE_ID":"mulline",
-    //        "UPDATE_DATE_TIME":"2009-08-12T11:53:09.000Z",
-    //        "SYNCH_FLAG":"Update",
-    //        "SYMBOL_ROTATION_VALUE":234,
-    //        "FACILITY_ID":"27JH2",
-    //        "SUBTYPE_CODE":1,
-    //        "SERVICE_AREA_CODE":"NL",
-    //        "INSTALL_DATE":"2004-12-15T00:00:00.000Z",
-    //        "HYDRANT_MANUF_CODE":"Mueller",
-    //        "OWNER_CODE":"BWSC",
-    //        "METERED_FLAG":"Unknown",
-    //        "ADDRESS_NUMBER":" ",
-    //        "STREET_FEATURE_CODE":2269,
-    //        "CROSS_STREET_FEATURE_CODE":3403,
-    //        "LOC_SOURCE_CODE":"GPS Location",
-    //        "MANUFACTURE_YEAR":2004,
-    //        "HYDRANT_MODEL_CODE":"MUCENT",
-    //        "GLOBALID":"{58F54056-5DE5-4F89-8887-95A11F7E3A33}",
-    //        "CW_STATUS_CODE":"OP",
-    //        "CW_OWNER_CODE":"BWSC",
-    //        "ASSET_STATUS":1
-    //     },
-    //     "geometry":{  
-    //        "type":"Point",
-    //        "coordinates":[  
-    //           -71.06708688467971,
-    //           42.3723784949859
-    //        ]
-    //     }
-    //  }
-
     let hydrantArray = [];
 
     for (let i = 0; i < hydrantItemsBoston.length; i++) {
@@ -207,6 +130,7 @@ let hydrants = processProvidenceData();
 hydrants = hydrants.concat(processBostonData());
 
 mongoose.connect(process.env.HYDRANT_DB, { useNewUrlParser: true });
+
 let hydrantSchema = new mongoose.Schema({
     id: String,
     hydrantId: String,
@@ -219,28 +143,58 @@ let hydrantSchema = new mongoose.Schema({
     }
 });
 
-let HydrantModel = mongoose.model('Hydrant', hydrantSchema);
+const HydrantModel = mongoose.model('Hydrant', hydrantSchema);
 
-for (let i = 0; i < hydrants.length; i++) {
-    if(Object.keys(hydrants[i]).length){
-        //console.log('hydrants[i]', hydrants[i])
-        let createObject = {
-            id: hydrants[i].id,
-            hydrantId: hydrants[i].hydrantId,
-            locationDescription: hydrants[i].locationDescription,
-            street: hydrants[i].street,
-            city: hydrants[i].city,
-            location: {
-                lat: hydrants[i].location.lat,
-                lon: hydrants[i].location.lon
+const saveToMongo = function saveToMongDbPromise(model){
+    return new Promise( (resolve, reject) => {
+        model.save( (error) => {
+            if(error){
+                return reject( new Error(error) );
             }
-        }
-    
-        let hydrantModel = new HydrantModel(createObject);
-        hydrantModel.save(function (err) {
-            if (err) return handleError(err);
-            //console.log("saved!")
+            process.stdout.write('*');
+            resolve('Saved');
         });
-    }
-
+    } );
 }
+
+const hydrantLoop = function hydrantLoop(HydrantModel){
+    let promiseArray = [];
+    
+    for (let i = 0; i < hydrants.length; i++) {
+        if(Object.keys(hydrants[i]).length){
+            //console.log('hydrants[i]', hydrants[i])
+            let createObject = {
+                id: hydrants[i].id,
+                hydrantId: hydrants[i].hydrantId,
+                locationDescription: hydrants[i].locationDescription,
+                street: hydrants[i].street,
+                city: hydrants[i].city,
+                location: {
+                    lat: hydrants[i].location.lat,
+                    lon: hydrants[i].location.lon
+                }
+            }
+        
+            let hydrantModel = new HydrantModel(createObject);
+            process.stdout.write('.');
+            promiseArray.push(saveToMongo(createObject, hydrantModel));
+        }
+    }
+    return promiseArray;
+}
+
+const promiseArray = hydrantLoop(HydrantModel);
+
+Promise.all(promiseArray)
+.then( (response) => {
+    //console.log(response);
+    for(let i=0; i<response.length; i++){
+        process.stdout.write('.');
+    }
+    console.log(`Saved ${response.length} documents.`);
+    mongoose.connection.close();
+} )
+.catch( (error) => {
+    console.log(new Error(error));
+    mongoose.connection.close();
+});

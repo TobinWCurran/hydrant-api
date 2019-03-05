@@ -13,19 +13,19 @@ const thisMonth = today.toLocaleString('en-us', { month: 'short' });
 const storage = multer.diskStorage({
 
     destination: function (req, file, callback) {
-        
+
         let storageDirYear = photoStorageLoc + thisYear;
         let storageDirMonth = photoStorageLoc + thisYear + '/' + thisMonth;
 
-		if(!fs.existsSync(photoStorageLoc)){
+        if (!fs.existsSync(photoStorageLoc)) {
             fs.mkdirSync(photoStorageLoc)
         }
 
-        if(!fs.existsSync(storageDirYear)){
+        if (!fs.existsSync(storageDirYear)) {
             fs.mkdirSync(storageDirYear)
         }
 
-        if (!fs.existsSync(storageDirMonth)){
+        if (!fs.existsSync(storageDirMonth)) {
             fs.mkdirSync(storageDirMonth);
         }
 
