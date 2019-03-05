@@ -38,4 +38,35 @@ router.post('/', (req, res) => {
     });
 });
 
+router.post('/next', (req, res) => {
+
+    const allHydrants = function getAllHydrants(){
+        return new Promise((resolve, reject) => {
+            resolve(HydrantModel.find({ "hydrantId": { $nin: req.body.excludedHydrants } }).lean());
+        });
+    }
+
+    allHydrants().then((results) => {
+        let thoseLocations = [];
+
+        const thisLocation = {
+            lat: req.body.lat,
+            lon: req.body.lon
+        };
+
+        for (let i = 0; i < results.length; i++) {
+            thoseLocations.push({
+                "hydrantId": results[i].hydrantId,
+                "lat": results[i].location.lat,
+                "lon": results[i].location.lon
+            });
+        }
+
+        const locationController = new LocationController(thisLocation, thoseLocations);
+        const closestHydrant = locationController.getClosestHydrant();
+
+        return res.send(closestHydrant);
+    });
+});
+
 export default router;
